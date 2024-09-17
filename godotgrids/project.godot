@@ -11,5 +11,10 @@ config_version=5
 [application]
 
 config/name="godotgrids"
+run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
+
+[debug]
+
+gdscript/warnings/untyped_declaration=1
