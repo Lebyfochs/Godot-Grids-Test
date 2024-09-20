@@ -1,13 +1,33 @@
 extends Node2D
 
-var GridSize = 4
+var inputInt = 0
+var GridSize = 8
 var Dic = {}
 var rng = RandomNumberGenerator.new()
+var tile
+var painting: bool = false
+
 
 @onready var background_layer: TileMapLayer = $BackgroundLayer
 @onready var selection_layer: TileMapLayer = $SelectionLayer
-@onready var painter_view_layer: TileMapLayer = $PainterViewLayer
 
+func _input(event: InputEvent) -> void:
+	if (event.is_action_pressed("1")):
+		_changeInputInt(0)
+	elif  (event.is_action_pressed("2")):
+		_changeInputInt(1)
+	elif (event.is_action_pressed("3")):
+		_changeInputInt(2)
+		
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			painting = true
+		else:
+			painting = false
+			
+func _changeInputInt(newInputInt: int):
+	inputInt = newInputInt
+	print(inputInt)
 
 func _ready() -> void:
 	for x in GridSize:
@@ -21,10 +41,10 @@ func _ready() -> void:
 			background_layer.set_cell(Vector2(x,y), 0, Vector2i(grassType,0), 0)
 	print(Dic)
 
-
 #showing a selected cell
 func _process(delta: float) -> void:
-	var tile = background_layer.local_to_map(get_local_mouse_position())
+	
+	tile = background_layer.local_to_map(get_local_mouse_position())
 	
 	for x in GridSize:
 		for y in GridSize:
@@ -32,4 +52,7 @@ func _process(delta: float) -> void:
 	
 	if Dic.has(str(tile)):
 		selection_layer.set_cell(tile, 0, Vector2i(0,0), 0)
-		print(Dic[str(tile)])
+	
+	if painting == true:
+		if Dic.has(str(tile)):
+			background_layer.set_cell(tile,0, Vector2i(inputInt,0), 0)
